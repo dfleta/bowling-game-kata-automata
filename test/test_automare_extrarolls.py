@@ -94,6 +94,7 @@ def test_two_strikes_in_extra_rolls():
     total = 111
     scoreCard = ScoreCard(pins)
     automata.setInput(scoreCard)
+    assert automata.output() == total
 
 def test_one_strike_in_extra_roll():
     # one strike in extra roll
