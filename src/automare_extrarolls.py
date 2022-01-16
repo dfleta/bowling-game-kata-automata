@@ -140,10 +140,11 @@ class Automaton:
         extraRolls = self.input.pins[roll:]
         if not extraRolls:  # se puede mover al while de arriba
             return self.input.score
-        
-        if extraRolls == 'XX':
+                
+        if self.state == ('X', 'X', 'X'):
             self.input.score += self.lambda_pins(extraRolls) + self.lambda_pins('X')
             return self.input.score
+
         # casos: 5/ XX X 8
         self.input.score += self.lambda_pins(extraRolls)
         score_d = self.input.score # debug
