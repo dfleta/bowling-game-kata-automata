@@ -3,8 +3,9 @@ import pytest
 from src.automare_extrarolls import Automaton
 from src.automare_extrarolls import ScoreCard
 
- # Hitting pins total = 60
+@pytest.mark.state_n
 def test_hitting_pins_regular():
+    # Hitting pins total = 60
     automata = Automaton()
     pins = "12345123451234512345"
     total = 60
@@ -12,6 +13,7 @@ def test_hitting_pins_regular():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.state_n
 def test_symbol_zero():
     # test symbol -
     automata = Automaton()
@@ -28,6 +30,7 @@ def test_symbol_zero():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.spare
 def test_spare_not_extra():
     # test spare not extra
     automata = Automaton()
@@ -37,6 +40,7 @@ def test_spare_not_extra():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.strike
 def test_strike():
     # test strike
     automata = Automaton()
@@ -53,6 +57,7 @@ def test_strike():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.strike
 def test_two_strikes(): 
     # two strikes in a row is a double
     automata = Automaton()
@@ -62,6 +67,7 @@ def test_two_strikes():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.strike
 def test_three_strikes():
     # three strikes in a row is a triple
     automata = Automaton()
@@ -71,6 +77,7 @@ def test_three_strikes():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.extra_rolls
 def test_one_pin_in_extra_roll():
     # one pin in extra roll
     automata = Automaton()
@@ -87,6 +94,7 @@ def test_one_pin_in_extra_roll():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.extra_rolls
 def test_two_strikes_in_extra_rolls():
     # two strikes in extra rolls
     automata = Automaton()
@@ -96,6 +104,7 @@ def test_two_strikes_in_extra_rolls():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.extra_rolls
 def test_one_strike_in_extra_roll():
     # one strike in extra roll
     automata = Automaton()
@@ -105,6 +114,7 @@ def test_one_strike_in_extra_roll():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
+@pytest.mark.extra_rolls
 def test_spare_in_extra_roll():
     # spare in extra roll
     automata = Automaton()
@@ -114,7 +124,8 @@ def test_spare_in_extra_roll():
     automata.setInput(scoreCard)
     assert automata.output() == total
 
-def test_two_strikes_in_extra_rolls():
+@pytest.mark.extra_rolls
+def test_triple_strike_before_extra_rolls():
     # 12 strikes is a “Thanksgiving Turkey”
     # 2 strikes in extra rolls
     automata = Automaton()
@@ -123,6 +134,3 @@ def test_two_strikes_in_extra_rolls():
     scoreCard = ScoreCard(pins)
     automata.setInput(scoreCard)
     assert automata.output() == total
-
-
-
