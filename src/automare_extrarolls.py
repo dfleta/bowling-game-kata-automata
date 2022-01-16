@@ -121,26 +121,23 @@ class Automaton:
         self.input = scoreCard
 
     def output(self):
-        frame = 0 # debugging
-        score = 0 # debugging
-        i = 0
+        frame_d = 0 # debugging
+        score_d = 0 # debugging
+        roll = 0 # automaton input reader
         # while i < len(self.input.pins): # refactorizar a no estar en last frame, i sobra aqui
         while self.p != 'finalFrame':
-            pin = self.input.pins[i]
-            if pin not in self.states:
-                pin += self.input.pins[i + 1]
-                i += 1
-            self.transition(pin)
-            self.input.score += self.lambda_function(pin)
-            score = self.input.score # debugging
-            i += 1
+            roll, frame_pins = self.input.frame_pins(roll) # refactor 2 niveles mfowler
+            self.transition(frame_pins)
+            self.input.score += self.lambda_function(frame_pins)
+            score_d = self.input.score # debugging
+            roll += 1
             self.input.frame += 1
-            frame = self.input.frame #debugging
+            frame_d = self.input.frame #debugging
             if self.input.frame > 10:
                 self.p = 'finalFrame'
 
         # extra rolls
-        extraRolls = self.input.pins[i:]
+        extraRolls = self.input.pins[roll:]
         if not extraRolls:  # se puede mover al while de arriba
             return self.input.score
         
@@ -149,5 +146,5 @@ class Automaton:
             return self.input.score
         # casos: 5/ XX X 8
         self.input.score += self.lambda_pins(extraRolls)
-        score = self.input.score # debug
+        score_d = self.input.score # debug
         return self.input.score
