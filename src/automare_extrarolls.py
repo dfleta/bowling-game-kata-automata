@@ -1,6 +1,5 @@
-from enum import auto
 import re
-from typing import Pattern
+from src.scoreCard import ScoreCard
 
 ''' 
 A finite automaton is a collection of 5-tuple (Q, ∑, δ, q0, F), where:
@@ -12,14 +11,6 @@ A finite automaton is a collection of 5-tuple (Q, ∑, δ, q0, F), where:
     δ: Transition function
     λ: output function
 '''
-
-class ScoreCard:
-
-    def __init__(self, scoreCard):
-        self.pins = scoreCard
-        self.frame = 1
-        self.score = 0
-
 
 class Automaton:
 
@@ -88,10 +79,10 @@ class Automaton:
         elif self.pattern_spare.match(symbol):
             self.p = self.transitions['/']
         else:
-            self.p = self.transitions[symbol]
+            self.p = self.transitions['X']
         self.state = (self.o, self.q, self.p)
 
-    def lambda_f(self, symbol):
+    def lambda_function(self, symbol):
         output = self.transition_table[self.state]
         return output(symbol)
 
@@ -130,8 +121,8 @@ class Automaton:
         self.input = scoreCard
 
     def output(self):
-        frame = 0
-        score = 0
+        frame = 0 # debugging
+        score = 0 # debugging
         i = 0
         # while i < len(self.input.pins): # refactorizar a no estar en last frame, i sobra aqui
         while self.p != 'finalFrame':
@@ -140,11 +131,11 @@ class Automaton:
                 pin += self.input.pins[i + 1]
                 i += 1
             self.transition(pin)
-            self.input.score += self.lambda_f(pin)
-            score = self.input.score # debug
+            self.input.score += self.lambda_function(pin)
+            score = self.input.score # debugging
             i += 1
             self.input.frame += 1
-            frame = self.input.frame
+            frame = self.input.frame #debugging
             if self.input.frame > 10:
                 self.p = 'finalFrame'
 
