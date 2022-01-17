@@ -45,30 +45,30 @@ class Automaton:
         ###
         # Transition table 
         # ###
-        self.transition_table = { ('n', 'n', 'n'): self.lambda_pins,
+        self.transition_table = { ('n', 'n', 'n'): self.lambda_two_pins,
                              ('n', 'n', '/'): self.lambda_pin_spare,
                              ('n', '/', 'n'): self.lambda_spare,
-                             ('/', 'n', 'n'): self.lambda_pins,
+                             ('/', 'n', 'n'): self.lambda_two_pins,
                              ('/', 'n', '/'): self.lambda_pin_spare,
                              ('n', '/', '/'): self.lambda_spare_spare,
                              ('/', '/', 'n'): self.lambda_spare,
                              ('/', '/', '/'): self.lambda_spare_spare,
                              ('/', '/', 'X'): self.lambda_strike,
-                             ('n', 'n', 'X'): self.lambda_pins,
+                             ('n', 'n', 'X'): self.lambda_two_pins,
                              ('n', 'X', 'n'): self.lambda_strike,
-                             ('X', 'n', 'n'): self.lambda_pins,
+                             ('X', 'n', 'n'): self.lambda_two_pins,
                              ('n', 'X', 'X'): self.lambda_strike,
-                             ('X', 'X', 'n'): self.lambda_double,
-                             ('X', 'X', 'X'): self.lambda_triple,
+                             ('X', 'X', 'n'): self.lambda_double_strike,
+                             ('X', 'X', 'X'): self.lambda_triple_strike,
                              ('X', 'X', '/'): self.lambda_double_spare,
                              ('X', '/', 'X'): self.lambda_strike,
                              ('/', 'X', 'X'): self.lambda_strike,
                              ('/', 'X', '/'): self.lambda_strike_spare,
-                             ('/', 'n', 'X'): self.lambda_pins,
+                             ('/', 'n', 'X'): self.lambda_two_pins,
                              ('X', '/', 'n'): self.lambda_spare,
                              ('n', 'X', '/'): self.lambda_strike_spare,
                              ('n', '/', 'X'): self.lambda_strike,
-                             ('X', 'n', 'X'): self.lambda_pins }
+                             ('X', 'n', 'X'): self.lambda_two_pins }
         
         # INPUT
         self.input = "" # Score Card
@@ -110,7 +110,7 @@ class Automaton:
         output = self.transition_table[self.state]
         return output(symbol)
 
-    def lambda_pins(self, symbol):
+    def lambda_two_pins(self, symbol):
         if symbol[-1] == '/':
             return self.lambda_pin_spare(symbol)
         def int_value(symbol):
@@ -121,22 +121,22 @@ class Automaton:
         return self.pin_value['/']
 
     def lambda_spare(self, symbol):
-        return self.lambda_pins(symbol[0]) * self.DOUBLE + self.lambda_pins(symbol[1])
+        return self.lambda_two_pins(symbol[0]) * self.DOUBLE + self.lambda_two_pins(symbol[1])
     
     def lambda_spare_spare(self, symbol):
-        return self.lambda_pins(symbol[0]) + self.lambda_pins(symbol[1])
+        return self.lambda_two_pins(symbol[0]) + self.lambda_two_pins(symbol[1])
 
     def lambda_strike(self, symbol):
-        return self.lambda_pins(symbol) * self.DOUBLE
+        return self.lambda_two_pins(symbol) * self.DOUBLE
 
-    def lambda_triple(self, symbol):
-        return self.lambda_pins(symbol) * self.TRIPLE
+    def lambda_triple_strike(self, symbol):
+        return self.lambda_two_pins(symbol) * self.TRIPLE
 
-    def lambda_double(self, symbol):
-        return self.lambda_pins(symbol) * self.DOUBLE + self.lambda_pins(symbol[0])
+    def lambda_double_strike(self, symbol):
+        return self.lambda_two_pins(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
 
     def lambda_double_spare(self, symbol):
-        return self.lambda_pin_spare(symbol) * self.DOUBLE + self.lambda_pins(symbol[0])
+        return self.lambda_pin_spare(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
     
     def lambda_strike_spare(self, symbol):
         return self.lambda_pin_spare(symbol) * self.DOUBLE
@@ -169,9 +169,9 @@ class Automaton:
             return self.input.score
                 
         if self.state == ('X', 'X', 'extra_rolls'):
-            self.input.score += self.lambda_triple('X')
+            self.input.score += self.lambda_triple_strike('X')
             return self.input.score
         else:
             # casos: 5/ XX X 8
-            self.input.score += self.lambda_pins(extra_rolls)
+            self.input.score += self.lambda_two_pins(extra_rolls)
             return self.input.score
