@@ -8,7 +8,7 @@ A finite automaton is a collection of 5-tuple (Q, ∑, δ, q0, F), where:
     ∑: finite set of the input symbol  
     q0: initial state   
     F: final state  
-    δ: Transition function
+    δ: Transition function. δ(q, a) = p
     λ: output function
 '''
 
@@ -38,7 +38,7 @@ class Automaton:
         self.o = 'n' # initial state
         self.q = 'n' # current state
         self.p = 'n'  # next state
-        self.F = 'extra_rolls'
+        self.F = 'extra_rolls' # final state
         self.state = (self.o, self.q, self.p)
         
         self.input = ""
