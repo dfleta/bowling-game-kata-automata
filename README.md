@@ -60,3 +60,15 @@ Each frame means a change in the state of the machine. The automaton computes th
 
 The automaton reads the score card as a string of input symbols and moves between states `n` (regular roll), `/` spare, `X` strike or `extra_rolls`.
 
+### TDD
+
+The proposed order of the test cases is crucial to develop an "organic" algorithm.
+
+Is mandatory to run `coverage` in both test and `Automaton` and `ScoreCard` classes.
+
+    > coverage run -m pytest
+    > coverage report -m
+
+Pytest `markers` facilitate the selection and focusing in the transition to the required state.
+
+VSCode test debugging in addition with breakpoints are valuable tools to understand the code.
