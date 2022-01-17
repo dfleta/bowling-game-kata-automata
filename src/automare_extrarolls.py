@@ -21,7 +21,7 @@ class Automaton:
 
         self.symbols = "-123456789/X"
         self.alphabet = set(self.symbols) # ∑
-        self.states = {'n', '/', 'X', 'finalFrame'} # Q
+        self.states = {'n', '/', 'X', 'extra_rolls'} # Q
 
         # self.transitions = dict.fromkeys(self.symbols[0:10], 'n')
         # {'-': 'n', '1': 'n', '2': 'n', '3': 'n', '4': 'n', '5': 'n', '6': 'n', '7': 'n', '8': 'n', '9': 'n'}
@@ -38,7 +38,7 @@ class Automaton:
         self.o = 'n' # initial state
         self.q = 'n' # current state
         self.p = 'n'  # next state
-        self.F = 'finalFrame'
+        self.F = 'extra_rolls'
         self.state = (self.o, self.q, self.p)
         
         self.input = ""
@@ -80,6 +80,9 @@ class Automaton:
             self.p = self.transitions['/']
         else:
             self.p = self.transitions['X']
+        self.set_state()
+
+    def set_state(self):
         self.state = (self.o, self.q, self.p)
 
     def lambda_function(self, symbol):
@@ -125,7 +128,7 @@ class Automaton:
         score_d = 0 # debugging
         roll = 0 # automaton input reader
         # while i < len(self.input.pins): # refactorizar a no estar en last frame, i sobra aqui
-        while self.p != 'finalFrame':
+        while self.p != 'extra_rolls':
             roll, frame_pins = self.input.frame_pins(roll) # refactor 2 niveles mfowler
             self.transition(frame_pins)
             self.input.score += self.lambda_function(frame_pins)
@@ -134,15 +137,16 @@ class Automaton:
             self.input.frame += 1
             frame_d = self.input.frame #debugging
             if self.input.frame > 10:
-                self.p = 'finalFrame'
+                self.p = 'extra_rolls'
+                self.set_state()
 
         # extra rolls
         extraRolls = self.input.pins[roll:]
         if not extraRolls:  # se puede mover al while de arriba
             return self.input.score
                 
-        if self.state == ('X', 'X', 'X'):
-            self.input.score += self.lambda_pins(extraRolls) + self.lambda_pins('X')
+        if self.state == ('X', 'X', 'extra_rolls'):
+            self.input.score += self.lambda_triple('X')
             return self.input.score
 
         # casos: 5/ XX X 8
