@@ -93,11 +93,13 @@ class Automaton:
             self.p = self.transitions['n']
         elif self.pattern_spare.match(symbol):
             self.p = self.transitions['/']
-        else:
+        elif symbol == 'X':
             self.p = self.transitions['X']
-        self.set_state()
+        else:
+            self.p = 'extra_rolls'
+        self.set_state(self.o, self.q, self.p)
 
-    def set_state(self):
+    def set_state(self, o, q, p):
         self.state = (self.o, self.q, self.p)
 
     ###
@@ -151,32 +153,25 @@ class Automaton:
     # ###
 
     def output(self):
-        frame_d = 0 # debugging
-        score_d = 0 # debugging
         roll = 0 # automaton input reader
-        # while i < len(self.input.pins): # refactorizar a no estar en last frame, i sobra aqui
-        while self.p != 'extra_rolls':
+        while self.p != self.F:
             roll, frame_pins = self.input.frame_pins(roll) # refactor 2 niveles mfowler
+            self.input.frame += 1
             self.transition(frame_pins)
             self.input.score += self.lambda_function(frame_pins)
-            score_d = self.input.score # debugging
             roll += 1
-            self.input.frame += 1
-            frame_d = self.input.frame #debugging
-            if self.input.frame > 10:
-                self.p = 'extra_rolls'
-                self.set_state()
+            if self.input.frame > self.input.LAST_FRAME:
+                self.transition('extra_rolls')
 
         # extra rolls
-        extraRolls = self.input.pins[roll:]
-        if not extraRolls:  # se puede mover al while de arriba
+        extra_rolls = self.input.pins[roll:]
+        if not extra_rolls:  # se puede mover al while de arriba
             return self.input.score
                 
         if self.state == ('X', 'X', 'extra_rolls'):
             self.input.score += self.lambda_triple('X')
             return self.input.score
-
-        # casos: 5/ XX X 8
-        self.input.score += self.lambda_pins(extraRolls)
-        score_d = self.input.score # debug
-        return self.input.score
+        else:
+            # casos: 5/ XX X 8
+            self.input.score += self.lambda_pins(extra_rolls)
+            return self.input.score
