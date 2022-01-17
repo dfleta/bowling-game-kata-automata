@@ -60,7 +60,7 @@ class Automaton:
                              ('n', 'X', 'X'): self.lambda_strike,
                              ('X', 'X', 'n'): self.lambda_double_strike,
                              ('X', 'X', 'X'): self.lambda_triple_strike,
-                             ('X', 'X', '/'): self.lambda_double_spare,
+                             ('X', 'X', '/'): self.lambda_double_strike_spare,
                              ('X', '/', 'X'): self.lambda_strike,
                              ('/', 'X', 'X'): self.lambda_strike,
                              ('/', 'X', '/'): self.lambda_strike_spare,
@@ -129,17 +129,18 @@ class Automaton:
     def lambda_strike(self, symbol):
         return self.lambda_two_pins(symbol) * self.DOUBLE
 
-    def lambda_triple_strike(self, symbol):
-        return self.lambda_two_pins(symbol) * self.TRIPLE
-
     def lambda_double_strike(self, symbol):
         return self.lambda_two_pins(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
 
-    def lambda_double_spare(self, symbol):
-        return self.lambda_pin_spare(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
-    
+    def lambda_triple_strike(self, symbol):
+        return self.lambda_two_pins(symbol) * self.TRIPLE
+
     def lambda_strike_spare(self, symbol):
         return self.lambda_pin_spare(symbol) * self.DOUBLE
+
+    def lambda_double_strike_spare(self, symbol):
+        return self.lambda_pin_spare(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
+    
 
     ### 
     # INPUT 
