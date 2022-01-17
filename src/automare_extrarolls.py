@@ -16,35 +16,35 @@ class Automaton:
 
     def __init__(self):
 
-        self.DOUBLE = 2
-        self.TRIPLE = 3
+        ### 
+        # Automata definition 
+        # ###
 
         self.symbols = "-123456789/X"
         self.alphabet = set(self.symbols) # ∑
         self.states = {'n', '/', 'X', 'extra_rolls'} # Q
-
-        # self.transitions = dict.fromkeys(self.symbols[0:10], 'n')
-        # {'-': 'n', '1': 'n', '2': 'n', '3': 'n', '4': 'n', '5': 'n', '6': 'n', '7': 'n', '8': 'n', '9': 'n'}
-        self.pattern_pins = re.compile('[1-9][1-9]|-[1-9]|[1-9]-|--')
-        self.pattern_spare = re.compile('[1-9]/|-/')
-        # self.transitions = {self.pattern: 'n'}
-
-        self.transitions = {'n': 'n'}
-        self.strike = {'X': 'X'}
-        self.transitions.update(self.strike)
-        self.spare  = {'/': '/'}
-        self.transitions.update(self.spare)
-        
         self.o = 'n' # initial state
         self.q = 'n' # current state
         self.p = 'n'  # next state
         self.F = 'extra_rolls' # final state
         self.state = (self.o, self.q, self.p)
-        
-        self.input = ""
-        # Moore / Mealy
-        self.lambda_output = {'-': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'X': 10, '/': 10 }
 
+        ###
+        # δ: Transition function
+        # ###
+    
+        self.transitions = {'n': 'n'}
+        self.strike = {'X': 'X'}
+        self.transitions.update(self.strike)
+        self.spare  = {'/': '/'}
+        self.transitions.update(self.spare)
+
+        self.pattern_pins = re.compile('[1-9][1-9]|-[1-9]|[1-9]-|--')
+        self.pattern_spare = re.compile('[1-9]/|-/')
+        
+        ###
+        # Transition table 
+        # ###
         self.transition_table = { ('n', 'n', 'n'): self.lambda_pins,
                              ('n', 'n', '/'): self.lambda_pin_spare,
                              ('n', '/', 'n'): self.lambda_spare,
@@ -69,6 +69,21 @@ class Automaton:
                              ('n', 'X', '/'): self.lambda_strike_spare,
                              ('n', '/', 'X'): self.lambda_strike,
                              ('X', 'n', 'X'): self.lambda_pins }
+        
+        # INPUT
+        self.input = "" # Score Card
+
+        ### 
+        # OUTPUT 
+        # Mealy lambda output function 
+        # ###
+        self.pin_value = {'-': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'X': 10, '/': 10 }
+        self.DOUBLE = 2
+        self.TRIPLE = 3
+
+    ###
+    # δ: Transition function
+    # ###
 
     def transition(self, symbol): # δ
         # return state p
@@ -85,6 +100,10 @@ class Automaton:
     def set_state(self):
         self.state = (self.o, self.q, self.p)
 
+    ###
+    # Mealy lambda output function 
+    # ###
+
     def lambda_function(self, symbol):
         output = self.transition_table[self.state]
         return output(symbol)
@@ -93,11 +112,11 @@ class Automaton:
         if symbol[-1] == '/':
             return self.lambda_pin_spare(symbol)
         def int_value(symbol):
-            return self.lambda_output[symbol]
+            return self.pin_value[symbol]
         return sum(map(int_value, list(symbol)))
 
     def lambda_pin_spare(self, symbol):
-        return self.lambda_output['/']
+        return self.pin_value['/']
 
     def lambda_spare(self, symbol):
         return self.lambda_pins(symbol[0]) * self.DOUBLE + self.lambda_pins(symbol[1])
@@ -120,8 +139,16 @@ class Automaton:
     def lambda_strike_spare(self, symbol):
         return self.lambda_pin_spare(symbol) * self.DOUBLE
 
+    ### 
+    # INPUT 
+    # ###
+
     def setInput(self, scoreCard):
         self.input = scoreCard
+
+    ### 
+    # OUTPUT
+    # ###
 
     def output(self):
         frame_d = 0 # debugging
