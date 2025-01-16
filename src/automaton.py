@@ -16,8 +16,8 @@ class Automaton:
 
     def __init__(self):
 
-        ### 
-        # Automata definition 
+        ###
+        # Automata definition
         # ###
 
         self.symbols = "-123456789/X"
@@ -32,7 +32,7 @@ class Automaton:
         ###
         # δ: Transition function
         # ###
-    
+
         self.transitions = {'n': 'n'}
         self.strike = {'X': 'X'}
         self.transitions.update(self.strike)
@@ -41,9 +41,9 @@ class Automaton:
 
         self.pattern_pins = re.compile('[1-9][1-9]|-[1-9]|[1-9]-|--')
         self.pattern_spare = re.compile('[1-9]/|-/')
-        
+
         ###
-        # Transition table 
+        # Transition table
         # ###
         self.transition_table = { ('n', 'n', 'n'): self.lambda_two_pins,
                              ('n', 'n', '/'): self.lambda_pin_spare,
@@ -69,13 +69,13 @@ class Automaton:
                              ('n', 'X', '/'): self.lambda_strike_spare,
                              ('n', '/', 'X'): self.lambda_strike,
                              ('X', 'n', 'X'): self.lambda_two_pins }
-        
+
         # INPUT
         self.input = "" # Score Card
 
-        ### 
-        # OUTPUT 
-        # Mealy lambda output function 
+        ###
+        # OUTPUT
+        # Mealy lambda output function
         # ###
         self.pin_value = {'-': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'X': 10, '/': 10 }
         self.DOUBLE = 2
@@ -122,7 +122,7 @@ class Automaton:
 
     def lambda_spare(self, symbol):
         return self.lambda_two_pins(symbol[0]) * self.DOUBLE + self.lambda_two_pins(symbol[1])
-    
+
     def lambda_spare_spare(self, symbol):
         return self.lambda_two_pins(symbol[0]) + self.lambda_two_pins(symbol[1])
 
@@ -140,16 +140,16 @@ class Automaton:
 
     def lambda_double_strike_spare(self, symbol):
         return self.lambda_pin_spare(symbol) * self.DOUBLE + self.lambda_two_pins(symbol[0])
-    
 
-    ### 
-    # INPUT 
+
+    ###
+    # INPUT
     # ###
 
     def setInput(self, scoreCard):
         self.input = scoreCard
 
-    ### 
+    ###
     # OUTPUT
     # ###
 
@@ -168,7 +168,7 @@ class Automaton:
         extra_rolls = self.input.pins[roll:]
         if not extra_rolls:  # se puede mover al while de arriba
             return self.input.score
-                
+
         if self.state == ('X', 'X', 'extra_rolls'):
             self.input.score += self.lambda_triple_strike('X')
             return self.input.score

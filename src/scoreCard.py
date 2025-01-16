@@ -13,4 +13,3 @@ class ScoreCard:
             frame_pins += self.pins[roll + 1]
             roll += 1
         return roll, frame_pins
-
