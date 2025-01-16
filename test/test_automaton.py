@@ -1,7 +1,7 @@
 import pytest
 
 from src.automaton import Automaton
-from src.automaton import ScoreCard
+from src.scoreCard import ScoreCard
 
 @pytest.mark.state_n
 def test_hitting_pins_regular():
