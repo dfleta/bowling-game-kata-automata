@@ -1,5 +1,4 @@
 import re
-from src.scoreCard import ScoreCard
 
 # A finite automaton is a collection of 5-tuple (Q, ∑, δ, q0, F), where:
 #
