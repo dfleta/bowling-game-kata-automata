@@ -101,7 +101,7 @@ class Automaton:
         self.set_state(self.o, self.q, self.p)
 
     def set_state(self, o, q, p):
-        self.state = (self.o, self.q, self.p)
+        self.state = (o, q, p)
 
     ###
     # Mealy lambda output function
